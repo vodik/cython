@@ -716,7 +716,11 @@ static PyObject *__Pyx_Generator_Next(PyObject *self) {
             ret = __Pyx_Generator_Next(yf);
         } else
         #endif
-            ret = Py_TYPE(yf)->tp_iternext(yf);
+            if (Py_TYPE(yf)->tp_iternext) {
+                ret = Py_TYPE(yf)->tp_iternext(yf);
+            } else {
+                ret = __Pyx_Generator_Next(yf);
+            }
         gen->is_running = 0;
         //Py_DECREF(yf);
         if (likely(ret)) {
